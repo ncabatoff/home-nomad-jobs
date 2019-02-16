@@ -27,7 +27,7 @@ job "grafana" {
           providers:
           - name: 'default'
             orgId: 1
-            folder: ''
+            folder: 'std'
             type: file
             disableDeletion: false
             updateIntervalSeconds: 60
@@ -36,21 +36,9 @@ job "grafana" {
               path: /local/dashboards
       EOH
       }
-      template {
-        data = "{{ key \"grafana/dashboards/prometheus-stats\" }}"
-        destination = "local/dashboards/prometheus2.json"
-      }
-      template {
-        data = "{{ key \"grafana/dashboards/nomad-cluster\" }}"
-        destination = "local/dashboards/nomad-cluster.json"
-      }
-      template {
-        data = "{{ key \"grafana/dashboards/nomad-jobs\" }}"
-        destination = "local/dashboards/nomad-jobs.json"
-      }
-      template {
-        data = "{{ key \"grafana/dashboards/consul\" }}"
-        destination = "local/dashboards/consuljson"
+      artifact {
+        source = "http://localhost:8500/v1/kv/grafana/dashboards.tgz?raw=true"
+        destination = "local/dashboards/"
       }
       driver = "docker"
       config {

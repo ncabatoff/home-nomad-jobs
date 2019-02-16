@@ -1,1 +1,4 @@
 .terraform
+.idea
+gendash/*.json
+dashboards.tgz

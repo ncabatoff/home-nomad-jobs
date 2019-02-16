@@ -1,0 +1,3 @@
+#!/bin/sh
+
+jq '.rows | .[].panels | .[] | {title, target:.targets[].expr}' 
