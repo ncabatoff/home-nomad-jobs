@@ -37,7 +37,7 @@ job "grafana" {
       EOH
       }
       artifact {
-        source = "http://localhost:8500/v1/kv/grafana/dashboards.tgz?raw=true"
+        source = "http://consul.service.dc1.consul:8500/v1/kv/grafana/dashboards.tgz?raw=true"
         destination = "local/dashboards/"
       }
       driver = "docker"

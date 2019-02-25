@@ -16,7 +16,6 @@ grafana.dashboard.new(
         colorValue=true,
         thresholds='2,3',
         colors=["#d44a3a", "rgba(237, 129, 40, 0.89)", "#299c46"],
-
     ).addTarget(
         prom.target('sum(up{job="consul"})')
     ),

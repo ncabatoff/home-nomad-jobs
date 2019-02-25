@@ -1,4 +1,6 @@
-provider "consul" {}
+provider "consul" {
+  address = "consul.service.dc1.consul:8500"
+}
 
 data "local_file" "dashboards" {
   filename = "../dashboards.tgz"
