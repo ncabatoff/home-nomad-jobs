@@ -8,15 +8,17 @@ job "grafana" {
         data = <<EOH
           apiVersion: 1
 
+{{ range service "prometheus|any" }}
           datasources:
-          - name: Prometheus
+          - name: prom-{{ .ID }}
             type: prometheus
             access: proxy
             orgId: 1
-            url: http://192.168.2.154:9090
+            url: http://{{ .Address }}:{{ .Port }}
             isDefault: true
             version: 1
             editable: false
+{{ end }}
       EOH
       }
       template {
@@ -39,6 +41,9 @@ job "grafana" {
       artifact {
         source = "http://consul.service.dc1.consul:8500/v1/kv/grafana/dashboards.tgz?raw=true"
         destination = "local/dashboards/"
+        options {
+          checksum = "md5:${dashboard_checksum}"
+        }
       }
       driver = "docker"
       config {
@@ -51,7 +56,7 @@ job "grafana" {
           http = "3000"
         }
         dns_servers = [
-          "${attr.driver.docker.bridge_ip}"
+          "$${attr.driver.docker.bridge_ip}"
         ]
       }
       env {

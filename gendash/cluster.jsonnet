@@ -35,8 +35,17 @@ grafana.dashboard.new(
     ),
     gridPos={ x: 0, y: 4, w: 8, h: 6}
 )
+.addPanel(
+    graphPanel.new(
+        'raft: transaction rate',
+        span=6,
+        fill=0,
+    ).addTarget(
+        prom.target('rate(consul_raft_apply[1m])'),
+    ),
+    gridPos={ x: 0, y: 10, w: 8, h: 6}
+)
 
-# rate(consul_raft_apply[1m]) - rate of transactions
 # consul_raft_replication_heartbeat_03b70f9d_6b08_d9c1_af28_62515baec52c{quantile="0.99"}
 #
 

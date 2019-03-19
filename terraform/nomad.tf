@@ -7,5 +7,12 @@ resource "nomad_job" "mediaserver" {
 }
 
 resource "nomad_job" "grafana" {
-  jobspec = "${file("nomad/grafana.hcl")}"
+  jobspec = "${data.template_file.grafana_hcl.rendered}"
+}
+
+data "template_file" "grafana_hcl" {
+  template = "${file("nomad/grafana.hcl")}"
+  vars = {
+    dashboard_checksum = "${md5(data.local_file.dashboards.content)}"
+  }
 }
