@@ -17,7 +17,7 @@ grafana.dashboard.new(
         thresholds='2,3',
         colors=["#d44a3a", "rgba(237, 129, 40, 0.89)", "#299c46"],
     ).addTarget(
-        prom.target('sum(up{job="consul"})')
+        prom.target('sum(up{job="consul-servers"})')
     ),
     gridPos={ x: 0, y: 0, w: 2, h: 4}
 )
