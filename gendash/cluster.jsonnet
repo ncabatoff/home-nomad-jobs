@@ -23,27 +23,43 @@ grafana.dashboard.new(
 )
 .addPanel(
     graphPanel.new(
-        'raft: time for leader to contact followers',
+        'raft: time for leader to contact followers - 99th%',
         description="see [doc](https://www.consul.io/docs/agent/telemetry.html#leadership-changes)",
         span=6,
         format='dtdurationms',
         fill=0,
         min=0,
         max=2000,
-    ).addTarget(
+        legend_show=false,
+   )
+    .addTarget(
         prom.target('consul_raft_leader_lastContact{quantile="0.99"}'),
     ),
-    gridPos={ x: 0, y: 4, w: 8, h: 6}
+    gridPos={ x: 0, y: 4, w: 8, h: 5}
 )
 .addPanel(
     graphPanel.new(
         'raft: transaction rate',
         span=6,
         fill=0,
+        legend_show=false,
     ).addTarget(
         prom.target('rate(consul_raft_apply[1m])'),
     ),
-    gridPos={ x: 0, y: 10, w: 8, h: 6}
+    gridPos={ x: 0, y: 9, w: 8, h: 5}
+)
+.addPanel(
+    graphPanel.new(
+        'raft: transaction commit time - 99th%',
+        span=6,
+        format='dtdurationms',
+        fill=0,
+        min=0,
+        legend_show=false,
+    ).addTarget(
+        prom.target('consul_raft_commitTime{quantile="0.99"}'),
+    ),
+    gridPos={ x: 0, y: 14, w: 8, h: 5}
 )
 
 # consul_raft_replication_heartbeat_03b70f9d_6b08_d9c1_af28_62515baec52c{quantile="0.99"}
