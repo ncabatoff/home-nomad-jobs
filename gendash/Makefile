@@ -1,4 +1,4 @@
-DASHBOARDS=cluster.json
+DASHBOARDS=consul-server.json nomad-server.json
 
 jsonnetfile.json:
 	jb init

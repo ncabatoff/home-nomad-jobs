@@ -4,7 +4,7 @@ local singlestat = grafana.singlestat;
 local prom = grafana.prometheus;
 
 grafana.dashboard.new(
-    "Consul",
+    "Consul Servers",
     editable = true,    
 )
 .addPanel(
