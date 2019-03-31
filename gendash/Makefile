@@ -1,4 +1,4 @@
-DASHBOARDS=consul-server.json nomad-server.json
+DASHBOARDS=consul-server.json nomad-server.json nomad-client.json nomad-job.json
 
 jsonnetfile.json:
 	jb init

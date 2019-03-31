@@ -3,6 +3,10 @@ local graphPanel = grafana.graphPanel;
 local singlestat = grafana.singlestat;
 local prom = grafana.prometheus;
 
+local green = "#299c46";
+local amber = "rgba(237, 129, 40, 0.89)";
+local red = "#d44a3a";
+
 grafana.dashboard.new(
     "Nomad Servers",
     editable = true,    
@@ -15,11 +19,47 @@ grafana.dashboard.new(
         gaugeMaxValue=3,
         colorValue=true,
         thresholds='2,3',
-        colors=["#d44a3a", "rgba(237, 129, 40, 0.89)", "#299c46"],
+        colors=[red, amber, green],
     ).addTarget(
         prom.target('sum(up{job="nomad-servers"})')
     ),
     gridPos={ x: 0, y: 0, w: 2, h: 4}
+)
+.addPanel(
+    singlestat.new('broker ready',
+        valueName='current',
+        sparklineShow=true,
+        colorValue=true,
+        thresholds='1,3',
+        colors=[green, amber, red],
+    ).addTarget(
+        prom.target('sum(nomad_nomad_broker_total_ready)')
+    ),
+    gridPos={ x: 2, y: 0, w: 2, h: 4}
+)
+.addPanel(
+    singlestat.new('broker unacked',
+        valueName='current',
+        sparklineShow=true,
+        colorValue=true,
+        thresholds='1,3',
+        colors=[green, amber, red],
+    ).addTarget(
+        prom.target('sum(nomad_nomad_broker_total_unacked)')
+    ),
+    gridPos={ x: 4, y: 0, w: 2, h: 4}
+)
+.addPanel(
+    singlestat.new('broker blocked',
+        valueName='current',
+        sparklineShow=true,
+        colorValue=true,
+        thresholds='1,3',
+        colors=[green, amber, red],
+    ).addTarget(
+        prom.target('sum(nomad_nomad_broker_total_blocked)')
+    ),
+    gridPos={ x: 6, y: 0, w: 2, h: 4}
 )
 .addPanel(
     graphPanel.new(
