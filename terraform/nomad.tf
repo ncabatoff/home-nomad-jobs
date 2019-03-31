@@ -6,6 +6,10 @@ resource "nomad_job" "mediaserver" {
   jobspec = "${file("nomad/mediaserver.hcl")}"
 }
 
+resource "nomad_job" "process-exporter" {
+  jobspec = "${file("nomad/process-exporter.hcl")}"
+}
+
 resource "nomad_job" "grafana" {
   jobspec = "${data.template_file.grafana_hcl.rendered}"
 }
