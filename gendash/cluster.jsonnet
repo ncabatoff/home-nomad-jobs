@@ -4,7 +4,7 @@ local singlestat = grafana.singlestat;
 local prom = grafana.prometheus;
 
 grafana.dashboard.new(
-    "Cluster view",
+    "Consul",
     editable = true,    
 )
 .addPanel(
@@ -22,6 +22,50 @@ grafana.dashboard.new(
     gridPos={ x: 0, y: 0, w: 2, h: 4}
 )
 .addPanel(
+    singlestat.new('autopilot',
+        valueName='current',
+        sparklineShow=true,
+        gaugeShow=true,
+        gaugeMaxValue=1,
+        colorValue=true,
+        thresholds='0,1',
+        colors=["#d44a3a", "rgba(237, 129, 40, 0.89)", "#299c46"],
+    ).addTarget(
+        prom.target('sum(consul_autopilot_healthy)')
+    ),
+    gridPos={ x: 2, y: 0, w: 2, h: 4}
+)
+.addPanel(
+    singlestat.new('candidate',
+        valueName='current',
+        sparklineShow=true,
+        gaugeShow=true,
+        gaugeMaxValue=1,
+        colorValue=true,
+        thresholds='2,1',
+        colors=["#299c46", "rgba(237, 129, 40, 0.89)", "#d44a3a"],
+    ).addTarget(
+        prom.target('sum(consul_raft_state_candidate)')
+    ),
+    gridPos={ x: 4, y: 0, w: 2, h: 4}
+)
+.addPanel(
+    graphPanel.new(
+        'raft: GC pausing over prev minute',
+        description="see [doc](https://www.consul.io/docs/agent/telemetry.html#leadership-changes)",
+        span=6,
+        format='dtdurationms',
+        fill=0,
+        min=0,
+        max=500,
+        legend_show=false,
+   )
+    .addTarget(
+        prom.target('rate(consul_runtime_total_gc_pause_ns[1m])/1000000'),
+    ),
+    gridPos={ x: 8, y: 0, w: 8, h: 4}
+)
+.addPanel(
     graphPanel.new(
         'raft: time for leader to contact followers - 99th%',
         description="see [doc](https://www.consul.io/docs/agent/telemetry.html#leadership-changes)",
@@ -36,6 +80,22 @@ grafana.dashboard.new(
         prom.target('consul_raft_leader_lastContact{quantile="0.99"}'),
     ),
     gridPos={ x: 0, y: 4, w: 8, h: 5}
+)
+.addPanel(
+    graphPanel.new(
+        'raft: replication heartbeat - 99th%',
+        description="see [doc](https://www.consul.io/docs/agent/telemetry.html#leadership-changes)",
+        span=6,
+        format='dtdurationms',
+        fill=0,
+        min=0,
+        max=500,
+        legend_show=false,
+   )
+    .addTarget(
+        prom.target('consul_raft_replication_heartbeat{quantile="0.99"}'),
+    ),
+    gridPos={ x: 8, y: 4, w: 8, h: 5}
 )
 .addPanel(
     graphPanel.new(
@@ -59,9 +119,6 @@ grafana.dashboard.new(
     ).addTarget(
         prom.target('consul_raft_commitTime{quantile="0.99"}'),
     ),
-    gridPos={ x: 0, y: 14, w: 8, h: 5}
+    gridPos={ x: 8, y: 14, w: 8, h: 5}
 )
-
-# consul_raft_replication_heartbeat_03b70f9d_6b08_d9c1_af28_62515baec52c{quantile="0.99"}
-#
 

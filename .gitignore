@@ -1,4 +1,6 @@
 .terraform
 .idea
 gendash/*.json
+gendash/vendor
 dashboards.tgz
+terraform/save
