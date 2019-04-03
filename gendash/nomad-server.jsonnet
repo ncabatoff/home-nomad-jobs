@@ -1,4 +1,5 @@
 local grafana = import "grafana.libsonnet";
+local template = grafana.template;
 local graphPanel = grafana.graphPanel;
 local singlestat = grafana.singlestat;
 local prom = grafana.prometheus;
@@ -11,6 +12,10 @@ grafana.dashboard.new(
     "Nomad Servers",
     editable = true,    
 )
+.addTemplate(
+  template.datasource('ds', 'prometheus', 'default')
+)
+
 .addPanel(
     singlestat.new('nomad up',
         valueName='current',
@@ -20,6 +25,7 @@ grafana.dashboard.new(
         colorValue=true,
         thresholds='2,3',
         colors=[red, amber, green],
+        datasource='$ds',
     ).addTarget(
         prom.target('sum(up{job="nomad-servers"})')
     ),
@@ -32,6 +38,7 @@ grafana.dashboard.new(
         colorValue=true,
         thresholds='1,3',
         colors=[green, amber, red],
+        datasource='$ds',
     ).addTarget(
         prom.target('sum(nomad_nomad_broker_total_ready)')
     ),
@@ -44,6 +51,7 @@ grafana.dashboard.new(
         colorValue=true,
         thresholds='1,3',
         colors=[green, amber, red],
+        datasource='$ds',
     ).addTarget(
         prom.target('sum(nomad_nomad_broker_total_unacked)')
     ),
@@ -56,6 +64,7 @@ grafana.dashboard.new(
         colorValue=true,
         thresholds='1,3',
         colors=[green, amber, red],
+        datasource='$ds',
     ).addTarget(
         prom.target('sum(nomad_nomad_broker_total_blocked)')
     ),
@@ -71,6 +80,7 @@ grafana.dashboard.new(
         min=0,
         max=500,
         legend_show=false,
+        datasource='$ds',
    )
     .addTarget(
         prom.target('sum without(job) (rate(nomad_runtime_total_gc_pause_ns{job="nomad-servers"}[1m]))/1000000'),
@@ -86,6 +96,7 @@ grafana.dashboard.new(
         fill=0,
         min=0,
         legend_show=false,
+        datasource='$ds',
    )
     .addTarget(
         prom.target('sum without(job) (rate(nomad_nomad_rpc_request[1m]))'),
@@ -100,6 +111,7 @@ grafana.dashboard.new(
         fill=0,
         min=0,
         legend_show=false,
+        datasource='$ds',
     ).addTarget(
         prom.target('sum without(job) (rate(nomad_nomad_rpc_request_error[1m]))'),
     ),
@@ -116,6 +128,7 @@ grafana.dashboard.new(
         min=0,
         max=2000,
         legend_show=false,
+        datasource='$ds',
    )
     .addTarget(
         prom.target('sum without(job,quantile) (nomad_raft_leader_lastContact{quantile="0.99"})'),
@@ -131,6 +144,7 @@ grafana.dashboard.new(
         fill=0,
         min=0,
         legend_show=false,
+        datasource='$ds',
     ).addTarget(
         prom.target('sum without(job,quantile) (nomad_raft_replication_appendEntries_rpc{quantile="0.99"})'),
     ),

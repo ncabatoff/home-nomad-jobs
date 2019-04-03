@@ -1,4 +1,5 @@
 local grafana = import "grafana.libsonnet";
+local template = grafana.template;
 local graphPanel = grafana.graphPanel;
 local singlestat = grafana.singlestat;
 local prom = grafana.prometheus;
@@ -8,6 +9,10 @@ local legformat = '{{task_group}}.{{exported_job}}';
 grafana.dashboard.new(
     "Nomad Jobs",
     editable = true,    
+)
+
+.addTemplate(
+  template.datasource('ds', 'prometheus', 'default')
 )
 
 .addPanel(
@@ -21,6 +26,7 @@ grafana.dashboard.new(
         legend_rightSide=true,
         legend_hideEmpty=true,
         legend_hideZero=true,
+        datasource='$ds',
     ).addTarget(
         prom.target('sum by(task_group,exported_job) (nomad_nomad_job_summary_running)',
           legendFormat=legformat)
@@ -38,6 +44,7 @@ grafana.dashboard.new(
         legend_rightSide=true,
         legend_hideEmpty=true,
         legend_hideZero=true,
+        datasource='$ds',
     ).addTarget(
         prom.target('sum by(task_group,exported_job) (nomad_nomad_job_summary_queued)',
           legendFormat=legformat)
@@ -55,6 +62,7 @@ grafana.dashboard.new(
         legend_rightSide=true,
         legend_hideEmpty=true,
         legend_hideZero=true,
+        datasource='$ds',
     ).addTarget(
         prom.target('sum by(task_group,exported_job) (nomad_nomad_job_summary_complete)',
           legendFormat=legformat)
@@ -72,6 +80,7 @@ grafana.dashboard.new(
         legend_rightSide=true,
         legend_hideEmpty=true,
         legend_hideZero=true,
+        datasource='$ds',
     ).addTarget(
         prom.target('sum by(task_group,exported_job) (nomad_nomad_job_summary_failed)',
           legendFormat=legformat)
@@ -89,6 +98,7 @@ grafana.dashboard.new(
         legend_rightSide=true,
         legend_hideEmpty=true,
         legend_hideZero=true,
+        datasource='$ds',
     ).addTarget(
         prom.target('sum by(task_group,exported_job) (nomad_nomad_job_summary_starting)',
           legendFormat=legformat)
@@ -106,6 +116,7 @@ grafana.dashboard.new(
         legend_rightSide=true,
         legend_hideEmpty=true,
         legend_hideZero=true,
+        datasource='$ds',
     ).addTarget(
         prom.target('sum by(task_group,exported_job) (nomad_nomad_job_summary_lost)',
           legendFormat=legformat)

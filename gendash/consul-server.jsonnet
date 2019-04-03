@@ -1,12 +1,21 @@
 local grafana = import "grafana.libsonnet";
+local template = grafana.template;
 local graphPanel = grafana.graphPanel;
 local singlestat = grafana.singlestat;
 local prom = grafana.prometheus;
+
+local green = "#299c46";
+local amber = "rgba(237, 129, 40, 0.89)";
+local red = "#d44a3a";
 
 grafana.dashboard.new(
     "Consul Servers",
     editable = true,    
 )
+.addTemplate(
+  template.datasource('ds', 'prometheus', 'default')
+)
+
 .addPanel(
     singlestat.new('consuls up',
         valueName='current',
@@ -15,7 +24,8 @@ grafana.dashboard.new(
         gaugeMaxValue=3,
         colorValue=true,
         thresholds='2,3',
-        colors=["#d44a3a", "rgba(237, 129, 40, 0.89)", "#299c46"],
+        colors=[red, amber, green],
+        datasource='$ds',
     ).addTarget(
         prom.target('sum(up{job="consul-servers"})')
     ),
@@ -29,7 +39,8 @@ grafana.dashboard.new(
         gaugeMaxValue=1,
         colorValue=true,
         thresholds='0,1',
-        colors=["#d44a3a", "rgba(237, 129, 40, 0.89)", "#299c46"],
+        colors=[red, amber, green],
+        datasource='$ds',
     ).addTarget(
         prom.target('sum(consul_autopilot_healthy)')
     ),
@@ -43,7 +54,8 @@ grafana.dashboard.new(
         gaugeMaxValue=1,
         colorValue=true,
         thresholds='2,1',
-        colors=["#299c46", "rgba(237, 129, 40, 0.89)", "#d44a3a"],
+        colors=[green, amber, red],
+        datasource='$ds',
     ).addTarget(
         prom.target('sum(consul_raft_state_candidate)')
     ),
@@ -59,6 +71,7 @@ grafana.dashboard.new(
         min=0,
         max=500,
         legend_show=false,
+        datasource='$ds',
    )
     .addTarget(
         prom.target('rate(consul_runtime_total_gc_pause_ns[1m])/1000000'),
@@ -75,6 +88,7 @@ grafana.dashboard.new(
         min=0,
         max=2000,
         legend_show=false,
+        datasource='$ds',
    )
     .addTarget(
         prom.target('consul_raft_leader_lastContact{quantile="0.99"}'),
@@ -91,6 +105,7 @@ grafana.dashboard.new(
         min=0,
         max=500,
         legend_show=false,
+        datasource='$ds',
    )
     .addTarget(
         prom.target('consul_raft_replication_heartbeat{quantile="0.99"}'),
@@ -103,6 +118,7 @@ grafana.dashboard.new(
         span=6,
         fill=0,
         legend_show=false,
+        datasource='$ds',
     ).addTarget(
         prom.target('rate(consul_raft_apply[1m])'),
     ),
@@ -116,6 +132,7 @@ grafana.dashboard.new(
         fill=0,
         min=0,
         legend_show=false,
+        datasource='$ds',
     ).addTarget(
         prom.target('consul_raft_commitTime{quantile="0.99"}'),
     ),

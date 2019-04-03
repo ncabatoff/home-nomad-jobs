@@ -1,4 +1,5 @@
 local grafana = import "grafana.libsonnet";
+local template = grafana.template;
 local graphPanel = grafana.graphPanel;
 local singlestat = grafana.singlestat;
 local prom = grafana.prometheus;
@@ -12,6 +13,10 @@ grafana.dashboard.new(
     editable = true,    
 )
 
+.addTemplate(
+  template.datasource('ds', 'prometheus', 'default')
+)
+
 .addPanel(
     graphPanel.new(
         'allocations running',
@@ -19,6 +24,7 @@ grafana.dashboard.new(
         fill=0,
         min=0,
         legend_show=false,
+        datasource='$ds',
     ).addTarget(
         prom.target('sum without(job, node_id) (nomad_client_allocations_running)')
     ),
@@ -31,6 +37,7 @@ grafana.dashboard.new(
         fill=0,
         min=0,
         legend_show=false,
+        datasource='$ds',
     ).addTarget(
         prom.target('sum without(job, node_id) (nomad_client_allocations_blocked)')
     ),
@@ -43,6 +50,7 @@ grafana.dashboard.new(
         fill=0,
         min=0,
         legend_show=false,
+        datasource='$ds',
     ).addTarget(
         prom.target('sum without(job, node_id) (nomad_client_allocations_migrating)')
     ),
@@ -55,6 +63,7 @@ grafana.dashboard.new(
         fill=0,
         min=0,
         legend_show=false,
+        datasource='$ds',
     ).addTarget(
         prom.target('sum without(job, node_id) (nomad_client_allocations_pending)')
     ),
@@ -67,6 +76,7 @@ grafana.dashboard.new(
         fill=0,
         min=0,
         legend_show=false,
+        datasource='$ds',
     ).addTarget(
         prom.target('sum without(job, node_id) (nomad_client_allocations_terminal)')
     ),
@@ -83,6 +93,7 @@ grafana.dashboard.new(
         max=1,
         decimals=1,
         legend_show=false,
+        datasource='$ds',
     ).addTarget(
         prom.target('sum without(job, node_id) (nomad_client_allocated_cpu) /
                      (sum without(job, node_id) (nomad_client_allocated_cpu)
@@ -100,6 +111,7 @@ grafana.dashboard.new(
         max=1,
         decimals=1,
         legend_show=false,
+        datasource='$ds',
     ).addTarget(
         prom.target('sum without(job, node_id) (nomad_client_allocated_disk) /
                      (sum without(job, node_id) (nomad_client_allocated_disk)
@@ -117,6 +129,7 @@ grafana.dashboard.new(
         max=1,
         decimals=1,
         legend_show=false,
+        datasource='$ds',
     ).addTarget(
         prom.target('sum without(job, node_id) (nomad_client_allocated_memory) /
                      (sum without(job, node_id) (nomad_client_allocated_memory)
