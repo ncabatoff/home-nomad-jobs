@@ -17,3 +17,7 @@ resource "nomad_job" "system-monitoring" {
 resource "nomad_job" "dockerregistry" {
   jobspec = "${file("nomad/dockerregistry.hcl")}"
 }
+
+resource "nomad_job" "prometheus" {
+  jobspec = "${file("nomad/prometheus.hcl")}"
+}
