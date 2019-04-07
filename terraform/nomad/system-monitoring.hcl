@@ -98,5 +98,78 @@ process_names:
         }
       }
     }
+    task "cadvisor" {
+      driver = "docker"
+      config {
+        image = "google/cadvisor:v0.33.0"
+        privileged = true
+        mounts = [
+          {
+            type = "bind"
+            target = "/host"
+            source = "/"
+            readonly = true
+            bind_options {
+              propagation = "rslave"
+            }
+          }
+        ]
+        port_map {
+          http = "8080"
+        }
+        mounts = [
+          {
+            type = "bind"
+            source = "/"
+            target = "/rootfs"
+            readonly = true
+            bind_options {
+              propagation = "rslave"
+            }
+          },
+          {
+            type = "bind"
+            source = "/var/run"
+            target = "/var/run"
+          },
+          {
+            type = "bind"
+            source = "/sys"
+            target = "/sys"
+            readonly = true
+            bind_options {
+              propagation = "rslave"
+            }
+          },
+          {
+            type = "bind"
+            source = "/var/lib/docker"
+            target = "/var/lib/docker"
+            readonly = true
+            bind_options {
+              propagation = "rslave"
+            }
+          },
+        ]
+      }
+      resources {
+        memory = 50
+        network {
+          port "http" {}
+        }
+      }
+      service {
+        name = "cadvisor"
+        tags = "prom"
+        port = "http"
+        check {
+          type = "http"
+          port = "http"
+          path = "/metrics"
+          interval = "30s"
+          timeout = "1s"
+        }
+      }
+    }
   }
 }
